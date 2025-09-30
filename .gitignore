@@ -1,0 +1,77 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# macOS / Linux system files
+.DS_Store
+*.swp
+*~
+
+# Owlready2 cache
+bms_mas.sqlite3
+
+# Project-specific artifacts
+*.owl
+report/*.pdf
+report/*.docx
+report/*.pptx
+report/screenshots/
+
+# Video recordings
+*.mp4
+*.mov
