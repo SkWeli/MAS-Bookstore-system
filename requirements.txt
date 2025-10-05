@@ -2,3 +2,5 @@ mesa
 owlready2
 pandas
 matplotlib
+streamlit>=1.33
+altair>=5
