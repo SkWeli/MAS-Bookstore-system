@@ -2,14 +2,14 @@ from mesa import Model
 from mesa.time import RandomActivation
 from ontology import build_ontology, seed_data
 from rules import add_rules
-from agents import CustomerAgent, EmployeeAgent, InventoryManager
+from agents import CustomerAgent, EmployeeAgent, InventoryManager, BookAgent
 from messaging import MessageBus
 
 import csv
 from pathlib import Path
 
 class BookstoreModel(Model):
-    def __init__(self, n_customers=3, n_employees=1, steps=30, seed=None):
+    def __init__(self, n_customers=3, n_employees=1, steps=30, seed=None, restock_threshold=10, restock_target=30):
         super().__init__(seed=seed)
         self.steps = steps
         self.schedule = RandomActivation(self)
@@ -23,9 +23,17 @@ class BookstoreModel(Model):
         self.onto = build_ontology()
         seed_data(self.onto)
         add_rules(self.onto)
+
+        # Make policy configurable
+        self.restock_threshold = restock_threshold
+        self.restock_target = restock_target
+
         self.inv_manager = InventoryManager(self.onto, self.bus)
 
         # Agents
+        for b in self.onto.Book.instances():
+            ba = BookAgent(f"BookAgent_{b.name}", self, self.onto, b)
+            self.schedule.add(ba)
         for i in range(n_customers):
             a = CustomerAgent(f"Cust_{i+1}", self, self.onto, self.bus)
             self.schedule.add(a)
@@ -39,7 +47,6 @@ class BookstoreModel(Model):
         # capture all Inventory quantities by name for the dashboard
         row = {"step": self.step_idx}
         for inv in self.onto.Inventory.instances():
-            # friendly col name: use the individual name
             row[inv.name] = int(inv.AvailableQuantity)
         self.ts.append(row)
 

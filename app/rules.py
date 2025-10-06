@@ -17,10 +17,10 @@ def add_rules(onto):
         }.items():
             assert ent is not None, f"{name} missing from ontology!"
 
-        # Rule 1: AvailableQuantity < 3 => LowStock
+        # Rule 1: AvailableQuantity < 10 - LowStock
         imp1 = Imp()
         imp1.set_as_rule(f"""
-            {inv_cls.name}(?i), {aq_prop.name}(?i, ?q), lessThan(?q, 3)
+            {inv_cls.name}(?i), {aq_prop.name}(?i, ?q), lessThan(?q, 10)
             -> {low_cls.name}(?i)
         """)
 
