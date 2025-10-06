@@ -48,11 +48,9 @@ class EmployeeAgent(Agent):
         if inv is None:
             return  # unknown inventory; ignore safely
 
-        # if you added routing by WorksAt, ignore inventories I don't own
         if hasattr(self, "managed") and self.managed and (inv not in self.managed):
             return
 
-        # pretty title for logging
         book  = (getattr(inv, "Stores", []) or [None])[0]
         title = _title(book) if book else inv.name
         who   = getattr(self, "person", None).name if getattr(self, "person", None) else self.unique_id
@@ -60,7 +58,6 @@ class EmployeeAgent(Agent):
         inv.AvailableQuantity = int(inv.AvailableQuantity) + qty
         print(f"[RESTOCK] {who} restocked {title} +{qty} → {int(inv.AvailableQuantity)}")
 
-        # optional: log to events for your CSV/dashboard
         if hasattr(self.model, "events"):
             self.model.events.append({
                 "step": self.model.step_idx,
@@ -72,11 +69,10 @@ class EmployeeAgent(Agent):
                 "after_qty": int(inv.AvailableQuantity),
             })
 
-
     def step(self):
         threshold = getattr(self.model, "restock_threshold", 10)
         target    = getattr(self.model, "restock_target", 30)
-        for inv in list(self.managed):  # ← only inventories this employee manages
+        for inv in list(self.managed):  # only inventories this employee manages
             q = int(inv.AvailableQuantity)
             if q < threshold:
                 add = target - q
@@ -88,8 +84,6 @@ class BookAgent(Agent):
         super().__init__(unique_id, model)
         self.onto = onto
         self.book = book_individual
-        # Resolve its inventory via Stores inverse (Inventory -> Stores -> Book)
-        # We assume 1-to-1 inventory per book in this toy model.
         self.inventory = next((inv for inv in onto.Inventory.instances()
                                if self.book in getattr(inv, "Stores", [])), None)
 
@@ -114,7 +108,6 @@ class BookAgent(Agent):
         return int(getattr(self.inventory, "AvailableQuantity", 0)) if self.inventory else 0
 
     def step(self):
-        # Passive (no action needed). Exists to satisfy spec & for potential future behaviors.
         pass
 
 class InventoryManager:
@@ -130,7 +123,7 @@ class InventoryManager:
         book = onto.search_one(iri=payload["book_iri"])
         inv = onto.search_one(type=onto.Inventory, Stores=book)
         if not inv:
-            # fallback (very unlikely): scan
+            # fallback: scan
             inv = next((x for x in onto.Inventory.instances() if book in getattr(x, "Stores", [])), None)
 
         if not inv:

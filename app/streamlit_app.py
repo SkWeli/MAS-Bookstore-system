@@ -7,7 +7,7 @@ import pandas as pd
 import altair as alt
 import streamlit as st
 
-# Allow importing from the "app" folder (model.py lives there)
+# Allow importing from the "app" folder
 import sys
 sys.path.append(str(Path(__file__).resolve().parent / "app"))
 
@@ -17,9 +17,8 @@ from model import BookstoreModel  # noqa: E402
 st.set_page_config(page_title="MAS Bookstore Dashboard", layout="wide")
 st.title("📚 MAS Bookstore - Simulation Dashboard")
 
-# --------------------------------------------------------------------
-# Controls: pick simulation parameters and run it
-# --------------------------------------------------------------------
+# Controls:  simulation parameters 
+
 with st.sidebar:
     st.header("⚙️ Simulation Controls")
 
@@ -38,7 +37,7 @@ ts_path = Path("report/inventory_timeseries.csv")
 
 def run_simulation():
     """Run the MAS simulation and write CSVs into report/."""
-    # Clean report directory so we don't mix old/new data
+    # Clean report directory to avoid mixing old/new data
     report_dir = Path("report")
     if report_dir.exists():
         shutil.rmtree(report_dir)
@@ -67,9 +66,8 @@ if run_clicked:
     if ok and events_path.exists() and ts_path.exists():
         st.success("Simulation complete! Charts are updated below.")
 
-# --------------------------------------------------------------------
 # Load data (if present)
-# --------------------------------------------------------------------
+
 if not events_path.exists() or not ts_path.exists():
     st.info("Run the simulation from the left sidebar to generate CSVs (events.csv and inventory_timeseries.csv).")
     st.stop()
@@ -81,9 +79,8 @@ ts = pd.read_csv(ts_path)
 events.columns = [c.strip() for c in events.columns]
 ts.columns = [c.strip() for c in ts.columns]
 
-# --------------------------------------------------------------------
 # KPI cards
-# --------------------------------------------------------------------
+
 # Prefer explicit 'purchase_ok' if present; otherwise use 'purchase_request'
 purchase_type = "purchase_ok" if (events["type"] == "purchase_ok").any() else "purchase_request"
 total_purchases = int((events["type"] == purchase_type).sum())
@@ -119,9 +116,8 @@ k6.metric("🧑‍💼 Employees", int(num_employees))
 
 st.markdown("---")
 
-# --------------------------------------------------------------------
 # Build inventory → book title mapping (from restock logs)
-# --------------------------------------------------------------------
+
 inv_name_col = "inventory"
 book_title_col = "book"
 
@@ -136,9 +132,8 @@ if {"type", inv_name_col, book_title_col}.issubset(events.columns):
         .to_dict()
     )
 
-# --------------------------------------------------------------------
 # Inventory levels over time (line chart)
-# --------------------------------------------------------------------
+
 st.subheader("Inventory Levels Over Time")
 
 if "step" in ts.columns:
@@ -164,9 +159,8 @@ if "step" in ts.columns:
 else:
     st.info("`inventory_timeseries.csv` has no 'step' column — cannot plot time series.")
 
-# --------------------------------------------------------------------
-# Purchases per step (bar)
-# --------------------------------------------------------------------
+# Purchases per step (bar chart)
+
 st.subheader("Purchases per Step")
 
 if {"type", "step"}.issubset(events.columns):
@@ -186,9 +180,8 @@ if {"type", "step"}.issubset(events.columns):
 else:
     st.info("Events CSV missing 'step' and/or 'type'; cannot plot purchases per step.")
 
-# --------------------------------------------------------------------
 # Current stock snapshot (last step)
-# --------------------------------------------------------------------
+
 st.subheader("Current Stock (last step)")
 if "step" in ts.columns:
     last_row = ts.sort_values("step").tail(1)
@@ -200,9 +193,8 @@ if "step" in ts.columns:
 else:
     st.info("`inventory_timeseries.csv` has no 'step' column — cannot compute current snapshot.")
 
-# --------------------------------------------------------------------
 # Restock events (clean table)
-# --------------------------------------------------------------------
+
 st.subheader("Restock Events")
 restock_cols_pref = ["step", "employee", "book", "inventory", "qty", "after_qty"]
 restock_cols = [c for c in restock_cols_pref if c in events.columns]
@@ -211,9 +203,8 @@ restock_tbl = events[events["type"] == "restock"][restock_cols].sort_values(
 )
 st.dataframe(restock_tbl, use_container_width=True)
 
-# --------------------------------------------------------------------
 # Top books & top customers
-# --------------------------------------------------------------------
+
 st.markdown("---")
 st.subheader("Top Books & Top Customers")
 

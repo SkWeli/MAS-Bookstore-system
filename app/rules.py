@@ -10,7 +10,7 @@ def add_rules(onto):
         has_book  = onto.HasBook
         purchases = onto.Purchases
 
-        # Safety check (helps future debugging)
+        # Safety check 
         for name, ent in {
             "Inventory": inv_cls, "LowStock": low_cls, "AvailableQuantity": aq_prop,
             "Order": order_cls, "HasCustomer": has_cust, "HasBook": has_book, "Purchases": purchases

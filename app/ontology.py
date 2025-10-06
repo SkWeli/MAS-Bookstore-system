@@ -40,7 +40,7 @@ def build_ontology():
 
 def seed_data(onto):
     with onto:
-        # ────────────── Books (20) ──────────────
+        # Books 
         b1  = onto.Book("Book_HP1")
         b1.HasAuthor = "J. K. Rowling"
         b1.HasGenre  = "Fantasy"
@@ -161,7 +161,7 @@ def seed_data(onto):
         b20.HasPrice  = 1200.0
         b20.label     = ["The Alchemist"]
 
-        # ────────────── Inventories (explicit; padded IDs) ──────────────
+        #  Inventories 
         i1  = onto.Inventory("Inv_0001");  i1.AvailableQuantity = 50; i1.Stores = [b1]
         i2  = onto.Inventory("Inv_0002");  i2.AvailableQuantity = 20; i2.Stores = [b2]
         i3  = onto.Inventory("Inv_0003");  i3.AvailableQuantity = 25; i3.Stores = [b3]
@@ -183,7 +183,7 @@ def seed_data(onto):
         i19 = onto.Inventory("Inv_0019");  i19.AvailableQuantity = 24; i19.Stores = [b19]
         i20 = onto.Inventory("Inv_0020");  i20.AvailableQuantity = 26; i20.Stores = [b20]
 
-        # ────────────── People ──────────────
+        # People 
         e1 = onto.Employee("Emp_Alice")
         e2 = onto.Employee("Emp_Bob")
 
@@ -204,7 +204,6 @@ def seed_data(onto):
         e1.WorksAt = [i1,i2,i3,i4,i5,i6,i7,i8,i9,i10]
         e2.WorksAt = [i11,i12,i13,i14,i15,i16,i17,i18,i19,i20]
 
-        # ────────────── Demonstration relations ──────────────
         # Sample Purchases
         c1.Purchases  = [b1]     # Maya bought HP1
         c2.Purchases  = [b2]     # Leo bought 1984
@@ -219,7 +218,6 @@ def seed_data(onto):
         c11.Purchases = [b19]
         c12.Purchases = [b20]
 
-        # Sample Orders (for screenshots)
         o1 = onto.Order("Order_Maya_HP1");  o1.HasCustomer = [c1];  o1.HasBook = [b1]
         o2 = onto.Order("Order_Leo_1984");  o2.HasCustomer = [c2];  o2.HasBook = [b2]
 

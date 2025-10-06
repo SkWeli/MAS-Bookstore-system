@@ -16,7 +16,7 @@ class BookstoreModel(Model):
         self.bus = MessageBus()
 
         self.events = []   # per-event rows: {"step": int, "type": ..., "book": ..., "qty": int}
-        self.ts = []       # per-step snapshots: {"step": int, "Inv_HP1": int, "Inv_1984": int}
+        self.ts = []       
         self.step_idx = 0
 
         # Ontology
@@ -58,7 +58,6 @@ class BookstoreModel(Model):
     def run(self):
         for _ in range(self.steps):
             self.step()
-        # save ontology snapshot for inspection
         self.onto.save(file="bms_result.owl", format="rdfxml")
 
         Path("report").mkdir(parents=True, exist_ok=True)
